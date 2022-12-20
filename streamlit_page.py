@@ -52,10 +52,10 @@ f1=str(cl["pos"][f0])
 
 col1, col2 = st.columns([2,2])
 with col1:
-    st.write("Realizou-se o movimento de:", f"{f0}")
+    st.write("Realizou-se o movimento de: ", f"{f0}")
 
 with col2:
-    st.write("A classe é : ", f1)
+    st.write("A classe é: ", f1)
 
 
 
