@@ -21,6 +21,13 @@ with st.sidebar:
     checkbox_one = st.checkbox("Acelerómetro")
     checkbox_two = st.checkbox("Giroscópio")
     
+#Botão Start
+start_button = st.empty()
+if start_button.button("Start", key='start', type="secondary", disabled=False):
+    client = mqtt.Client("Comando_gravar")
+    client.connect("mqtt.eclipseprojects.io", 1883, 60)
+    client.publish("ritalobo", payload = 'Start')
+    
 #Dataframe
 df = pd.read_csv("outro_teste2.csv", header=None)
 df.columns = ["Timestamp", "Accx", "Accy", "Accz", "Gyrox", "Gyroy", "Gyroz", "Classe"]
