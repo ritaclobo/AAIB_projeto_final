@@ -8,54 +8,38 @@ from paho.mqtt import client as mqtt_client
 import threading
 from streamlit.runtime.scriptrunner.script_run_context import add_script_run_ctx
 
-st.title("Cloud Logger de Instrumentação")
+st.title("Projeto de AAIB")
 
-st.subheader("Comunicação de dados adquiridos através do MQTT Broker")
+st.subheader("Distinção entre 4 classes relativas a movimentos em ballet")
+
+st.write("O objetivo deste projeto foi a utilização do Raspberry PI para adquiri dados de movimento, mais concretamente de acelerómetro e giroscópio, classficiando-os mais tarde com o uso de Machine Learning.")
+st.write("Desta forma, nesta página pode-se visualizar os dados adquiridos num gráfico, e está também disponível a informação relativamente à classe do movimento.")
+st.write("Considerou-se então: D1, D2")
 
 with st.sidebar:
-    st.write("Projeto desenvolvido para a disciplina de Aplicações Avançadas de Instrumentação Biomédica.")
-    st.write("O botão Start permite começar a gravação de som com o computador durante um certo número de segundos pré-definido.")
-    st.write("Escolher a característica:")
-    checkbox_one = st.checkbox("Sonograma")
-    checkbox_two = st.checkbox("RMSE")
-    checkbox_three = st.checkbox("Dados Adquiridos")
-    checkbox_four = st.checkbox("FFT")
+    st.write("Escolher o que se quer vizualizar:")
+    checkbox_one = st.checkbox("Acelerómetro")
+    checkbox_two = st.checkbox("Giroscópio")
     
-#Botão Start
-start_button = st.empty()
-if start_button.button("Start", key='start', type="secondary", disabled=False):
-    client = mqtt.Client("Comando_gravar")
-    client.connect("mqtt.eclipseprojects.io", 1883, 60)
-    client.publish("ritalobo", payload = 'Start')
-
 #Dataframe
 df = pd.read_csv("outro_teste2.csv", header=None)
-df.index = ["Tempo", "Sound Wave", "Tempo RMSE" ,"RMSE", "Y", "FRQ", "F0"]
-final_df=df.T
+df.columns = ["Timestamp", "Accx", "Accy", "Accz", "Gyrox", "Gyroy", "Gyroz", "Classe"]
+data_Sub1 = data_Sub.drop("Timestamp", axis=1)
 
-def plotd():
-    st.line_chart(final_df, x = "Tempo", y="Sound Wave")
+#DataFrame com dados do Acelerómetro
+data_Acc = data_Sub1[["Accx","Accy","Accz"]]
 
-graph = st.empty;
+#DataFrame com dados do Giroscópio
+data_Gyr = data_Sub1[["Gyrox","Gyroy","Gyroz"]]
 
+#Acc
 if checkbox_one:
-    st.write("Este primeiro gráfico represenda a amplitude da onda de som que foi gravada em função do tempo de gravação.")   
-    plotd()
-
+    st.line_chart(data_Acc)
+    
+#Gyr
 if checkbox_two:
-    st.write("O segundo gráfico representa a Energia RMS")
-    st.line_chart(final_df, x = "Tempo RMSE", y="RMSE")
+    st.line_chart(data_Gyr)
 
-if checkbox_three:
-    st.write("Esta é a DataFrame com todos os dados que foram retirados a partir do ficheiro de som:", final_df)
-
-col1, col2 = st.columns([2,2])
-with col1:
-    if checkbox_four:
-        st.write("Este é o FFT do sinal.")
-        st.line_chart(final_df, x = "FRQ", y="Y")
-
-f0=final_df["F0"][0]
-with col2:
-    if checkbox_four:
-        st.write("A frequência fundamental é : ", f"{f0}")
+#f0=data_sub1["Classe"][0]
+f0=2
+st.write("A classe é : ", f"{f0}")
