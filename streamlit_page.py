@@ -40,9 +40,24 @@ data_Acc = data_Sub1[["Accx","Accy","Accz"]]
 #DataFrame com dados do Giroscópio
 data_Gyr = data_Sub1[["Gyrox","Gyroy","Gyroz"]]
 
-#f0=data_sub1["Classe"][0]
-f0=2
-st.write("A classe é : ", f"{f0}")
+f0=int(data_Sub1["Classe"][0])
+#f0=2
+predict = [[0,1,2,3],["Classe de exclusão", "Desiquílibrio para a frente", "Desiquilíbrio para trás", "Equilíbrio"]]
+
+classe_df = pd.DataFrame(predict)
+cl=classe_df.T
+cl.columns = ["classe", "pos"]
+
+f1=str(cl["pos"][f0])
+
+col1, col2 = st.columns([2,2])
+with col1:
+    st.write("Realizou-se o movimento de:", f"{f0}")
+
+with col2:
+    st.write("A classe é : ", f1)
+
+
 
 #Acc
 if checkbox_one:
