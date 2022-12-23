@@ -1,13 +1,7 @@
 import paho.mqtt.client as mqtt
-import numpy as np
-import csv
 import pandas as pd
-from numpy import loadtxt, zeros, diff, mean, arange, ceil
-import seaborn as sns
 from sklearn.model_selection import train_test_split
-import json
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -22,8 +16,11 @@ def on_message(client, userdata, msg):
     print("")
     print("Done")
 
+data_t20 = pd.read_csv("D1_1.csv", header=None)
+data_t20.columns = ["Timestamp", "Accx", "Accy", "Accz", "Gyrox", "Gyroy", "Gyroz"]
+data_t2=data_t20.drop("Timestamp", axis=1)
 
-def main():
+def M_Learning():
     # No spyder (e depois no Raspberry) tem de estar todos os ficheiros csv (D1, D2, Eq, Ex) utilizados
     # para treinar o modelo
     #Datasets de treino
@@ -112,42 +109,40 @@ def main():
         labels.append(0)
         
     #------------------------------------------------------------------------------------------------
-
+ 
     data = pd.DataFrame(features, columns=["Median_Accx", "Median_Accy", "Median_Accz", "Median_Gyrx", "Median_Gyry", "Median_Gyrz", "Mean_Accx", "Mean_Accy", "Mean_Accz", "Mean_Gyrx", "Mean_Gyry", "Mean_Gyrz", "Max_Accx", "Max_Accy", "Max_Accz", "Max_Gyrx", "Max_Gyry", "Max_Gyrz", "Min_Accx", "Min_Accy", "Min_Accz", "Min_Gyrx", "Min_Gyry", "Min_Gyrz", "std_Accx", "std_Accy", "std_Accz", "std_Gyrx", "std_Gyry", "std_Gyrz"])
 
     data["Classe"]=labels
-
-    #Para testar o modelo vou tirar a primeira linha, como se fosse um novo dado
-    y2=data["Classe"][1:]
-    X2=data.drop(columns="Classe")[1:]
+    
+    lista_features_ideal=['Max_Gyrz','Median_Accz','Median_Accy','Mean_Accy','std_Gyry','Max_Accz','Mean_Gyrx','Min_Accz','std_Accz','Median_Accx']
+    y2=data["Classe"]
+    X2=data.drop(columns="Classe")
+    X2=X2[lista_features_ideal]
 
     X_traint, X_testt, y_traint, y_testt = train_test_split(X2, y2, test_size=0.33, random_state=42)
 
-    model=RandomForestClassifier().fit(X_traint, y_traint)
-    #model=SVC().fit(X_traint, y_traint)
+    model=RandomForestClassifier(n_estimators=10, criterion="entropy", max_depth=10, max_features=3).fit(X_traint, y_traint)
     #------------------------------------------------------------------------------------------------
     #Tirar as features da primeira janela do D1: D1_1.csv
-
-    data_t20 = pd.read_csv("Ex_1.csv", header=None)
-    data_t20.columns = ["Timestamp", "Accx", "Accy", "Accz", "Gyrox", "Gyroy", "Gyroz"]
-    data_t2=data_t20.drop("Timestamp", axis=1)
 
     #Para simular um teste, tenho aqui só a parte relativa à primeira linha
     w_features_list = [i for j in [data_t2.median(axis=0).tolist(), data_t2.mean(axis=0).tolist(), data_t2.max(axis=0).tolist(),data_t2.min(axis=0).tolist(),data_t2.std(axis=0).tolist()]for i in j]
     ddd = pd.DataFrame(w_features_list).T
     ddd.columns=["Median_Accx", "Median_Accy", "Median_Accz", "Median_Gyrx", "Median_Gyry", "Median_Gyrz", "Mean_Accx", "Mean_Accy", "Mean_Accz", "Mean_Gyrx", "Mean_Gyry", "Mean_Gyrz", "Max_Accx", "Max_Accy", "Max_Accz", "Max_Gyrx", "Max_Gyry", "Max_Gyrz", "Min_Accx", "Min_Accy", "Min_Accz", "Min_Gyrx", "Min_Gyry", "Min_Gyrz", "std_Accx", "std_Accy", "std_Accz", "std_Gyrx", "std_Gyry", "std_Gyrz"]
+    ddd=ddd[lista_features_ideal]
 
     predictions = model.predict(ddd)
-    print("Resultado", predictions)
+    return predictions[0]
     
-    #--------------------------------------------------------------------------------------
+def main():
     #Treinar os novos dados e classificar
-        
+    classe = M_Learning() 
+    
     #Depois de já se ter a classe certa, adicionar à dataframe anterior assim
-    classe = predictions[0] #Para testar se manda ou não 
     data_t20["Classe"] =classe
     
     #Depois de DataFrame passa-se para lista
+    
     lista_df= data_t20.values.tolist()
     
     #De lista passar para String
