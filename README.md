@@ -6,7 +6,7 @@ Estão incluídos neste repositório os ficheiros Publisher.py que é usado para
 
 O Subscriber.py é corrido no github para receber os dados publicados e transformar os mesmos num ficheiro csv.
 
-O Streamlit_page.py corresponde à página Streamlit lançada.
+O streamlit_page.py corresponde à página Streamlit lançada.
 
 Está incluído um ficheiro em Jupyter Notebooks (Projeto AAIB.ipynb) que contém todo o processo realizado ao longo deste projeto.
 
