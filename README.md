@@ -10,7 +10,7 @@ O streamlit_page.py corresponde à página Streamlit lançada.
 
 Está incluído um ficheiro em Jupyter Notebooks (Projeto AAIB.ipynb) que contém todo o processo realizado ao longo deste projeto.
 
-Também se incluiu um vídeo a mostrar como funciona esta segunda parte do projeto (Publisher, Subscriber, streamlit), e outro (Projeto_AAIB_mobile_version.mp4) com a versão para telemóvel.
+Também se incluiu um vídeo (Projeto_AAIB_funcionamento.mp4) a mostrar como funciona esta segunda parte do projeto (Publisher, Subscriber, streamlit), e outro (Projeto_AAIB_mobile_version.mp4) com a versão para telemóvel.
 
 Na pasta zip estão todos os ficheiros csv necessários para a realização do trabalho, sendo que os D1_1, D2_1, Ex_1, Eq_1 e Eq_2 são de teste.
 
